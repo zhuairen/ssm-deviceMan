@@ -9,6 +9,8 @@ public interface psn_devMapper {
     long countByExample(psn_devExample example);
 
     int deleteByExample(psn_devExample example);
+    //移除用户绑定设备
+    int delPsnDev(Integer did);
 
     int insert(psn_dev record);
 

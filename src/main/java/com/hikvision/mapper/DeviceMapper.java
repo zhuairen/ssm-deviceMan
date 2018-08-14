@@ -34,4 +34,6 @@ public interface DeviceMapper {
 
     int updateByPrimaryKey(Device record);
 
+	List<Device> searchDevEcharts();
+
 }

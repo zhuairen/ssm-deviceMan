@@ -86,6 +86,9 @@
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
+  <delete id="delPsnDev" parameterType="INTEGER">
+  	delete from psn_dev where did = #{did,jdbcType=INTEGER}
+  </delete>
   <insert id="insert" parameterType="com.hikvision.bean.psn_dev">
     insert into psn_dev (person_id, did)
     values (#{personId,jdbcType=INTEGER}, #{did,jdbcType=INTEGER})

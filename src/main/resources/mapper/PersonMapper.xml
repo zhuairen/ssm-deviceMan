@@ -32,12 +32,13 @@
     <result column="dept_name" jdbcType="VARCHAR" property="deptName" />
     <result column="device_id" jdbcType="INTEGER" property="deviceId" />
     <result column="power" jdbcType="VARCHAR" property="power" />
+    <result column="dev_count" jdbcType="INTEGER" property="devCount" />
     <association property="device" javaType="com.hikvision.bean.Device">
     	<id column="dev_id" property="devId"/>
     	<result column="dev_sn" property="devSn"/>
     	<result column="dev_name" property="devName"/>
     	<result column="dev_addr" property="devAddr"/>
-    	<result column="dev_privice" property="devPrice"/>
+    	<result column="dev_price" property="devPrice"/>
     	<result column="dev_detail" property="devDetail"/>
     </association>
   </resultMap>
@@ -110,6 +111,15 @@
   <sql id="WithDept_Column_List">
     id, name, password, age, email, dept_name, device_id, power, dev_id, dev_sn, dev_name, dev_addr, dev_price
   </sql>
+
+  <select id="searcha" parameterType="java.lang.String" resultMap="WithDeviceResultMap">
+  	select DISTINCT 
+		id, name, age, email, dept_name,dev_id, dev_sn, dev_name, dev_addr, dev_price, dev_detail
+	from person p LEFT JOIN psn_dev pd on p.id = pd.person_id LEFT JOIN device d
+	on pd.did = d.dev_id  and 
+		d.dev_sn like '%53%'
+	GROUP BY id
+  </select>
   <select id="selectNormal" parameterType="com.hikvision.bean.PersonExample" resultMap="NormalResultMap">
   	select
     <if test="distinct">
@@ -126,13 +136,29 @@
     </if>
     group by name
   </select>
+  <select id="searchpd"  parameterType="java.lang.String" resultMap="WithDeviceResultMap">
+		select DISTINCT 
+			id, name, age, email, dept_name,dev_id, dev_sn, dev_name, dev_addr, dev_price, dev_detail
+		from person p LEFT JOIN psn_dev pd on p.id = pd.person_id LEFT JOIN device d
+		on pd.did = d.dev_id where
+		<if test="name != null">
+		    p.name like '%${name}%'
+		 </if>
+		<if test="devSn != null and name != null">
+		 	and d.dev_sn like '%${devSn}%'
+		 </if>
+		 <if test="name == null and devSn != null">
+		 	 d.dev_sn like '%${devSn}%'
+		 </if>
+		GROUP BY id
+  </select>
   <select id="selectNamePwd" parameterType="java.lang.String" resultMap="BaseResultMap">
     select 
     	name, password
     from person
     where name = #{name,jdbcType=VARCHAR}
   </select>
-    <select id="selectByExampleWithDevice" parameterType="com.hikvision.bean.PersonExample" resultMap="WithDeviceResultMap">
+  <select id="selectByExampleWithDevice1" parameterType="com.hikvision.bean.PersonExample" resultMap="WithDeviceResultMap">
     select
     <if test="distinct">
       distinct
@@ -146,6 +172,16 @@
     <if test="orderByClause != null">
       order by ${orderByClause}
     </if>
+  </select>
+  <select id="selectCount" parameterType="com.hikvision.bean.Person" resultMap="WithDeviceResultMap">
+		select distinct
+				p.id, p.name, p.age, p.email, p.dept_name, (select COUNT(pd.did) from psn_dev pd where pd.person_id = p.id) as dev_count
+		from person p LEFT JOIN psn_dev pd
+		on p.id = pd.person_id
+	  <if test="name != null">
+        where name like '${name}'
+      </if>
+		ORDER BY p.id
   </select>
   <select id="selectByExample" parameterType="com.hikvision.bean.PersonExample" resultMap="BaseResultMap">
     select
@@ -169,11 +205,12 @@
   </select>
   <!-- 1111111111111111111111111111111111111111111111 -->
   <select id="selectByNamePsnDev" parameterType="java.lang.String" resultMap="WithDeviceResultMap">
-  		select 
-  			name, dev_id, dev_sn, dev_name, dev_addr, dev_price, dev_detail
-  			from person p
-		LEFT JOIN device d ON p.device_id = d.dev_id
-		 where name = #{name,jdbcType=VARCHAR}
+		select distinct
+			d.dev_id,d.dev_sn, d.dev_name, d.dev_addr, d.dev_price, d.dev_detail
+		from person p, psn_dev pd, device d
+		where p.id = pd.person_id and pd.did = d.dev_id
+		and p.name = #{name,jdbcType=VARCHAR}
+		order by d.dev_id 
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from person

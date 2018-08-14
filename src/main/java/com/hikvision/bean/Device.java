@@ -13,9 +13,19 @@ public class Device {
 
     private String devDetail;
     
+    private Integer devNum;
+    
     
 
-    public Device() {
+    public Integer getDevNum() {
+		return devNum;
+	}
+
+	public void setDevNum(Integer devNum) {
+		this.devNum = devNum;
+	}
+
+	public Device() {
 		super();
 	}
 

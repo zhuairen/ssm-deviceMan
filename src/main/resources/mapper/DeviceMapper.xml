@@ -8,6 +8,7 @@
     <result column="dev_addr" jdbcType="VARCHAR" property="devAddr" />
     <result column="dev_price" jdbcType="DOUBLE" property="devPrice" />
     <result column="dev_detail" jdbcType="LONGVARCHAR" property="devDetail" />
+    <result column="dev_num" jdbcType="INTEGER" property="devNum" />
   </resultMap>
   <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.hikvision.bean.Device">
     <result column="dev_detail" jdbcType="LONGVARCHAR" property="devDetail" />
@@ -76,6 +77,12 @@
   <sql id="Blob_Column_List">
     dev_detail
   </sql>
+  <select id="searchDevEcharts" parameterType="java.lang.String" resultMap="BaseResultMap">
+ 		select DISTINCT 
+ 			dev_name,count(*) as dev_num
+ 			from device 
+ 		GROUP BY dev_name
+  </select>
   <select id="selectByExampleWithBLOBs" parameterType="com.hikvision.bean.DeviceExample" resultMap="ResultMapWithBLOBs">
     select
     <if test="distinct">

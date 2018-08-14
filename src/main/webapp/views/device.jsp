@@ -25,13 +25,14 @@
 		<!-- 标题 -->
 		<div class="row">
 			<div class="col-md-12">
-				<h1>欢迎尊敬的    ${sessionScope.person.name}</h1>
+				<%-- <h1>欢迎尊敬的    ${sessionScope.person.name}</h1> --%>
+				<h3>所有设备</h3>
 			</div>
 		</div>
 		<!-- 按钮 -->
 		<div class="row">
 			<div class="col-md-4 col-md-offset-8">
-				<button class="btn btn-primary" id="psn_modal_btn">查看人员</button>
+				<!-- <button class="btn btn-primary" id="psn_modal_btn">查看人员</button> -->
 				<button class="btn btn-primary" id="dev_add_modal_btn">新增设备</button>
 				<button class="btn btn-danger" id="dev_del_modal_btn">删除</button>
 			</div>
@@ -144,7 +145,14 @@
         <h4 class="modal-title" id="myModalLabel">修改设备</h4>
       </div>
       <div class="modal-body">
-        <form class="form-horizontal">
+        <form class="form-horizontal" id="devUpdateModal">
+          <div class="form-group">
+		    <label class="col-sm-2 control-label" >devId</label>
+		    <div class="col-sm-5">
+		      <input type="number" name="devId" class="form-control" id="devId_update_input" placeholder="设备Id" disabled="disabled">
+		      <span class="help-block"></span>
+		    </div>		    
+		  </div>
 		  <div class="form-group">
 		    <label class="col-sm-2 control-label">devSn</label>
 		    <div class="col-sm-5">
@@ -328,7 +336,7 @@
 		//alert(1);
 		//清除表单数据（表单完整重置（表单的数据，表单的样式））
 		reset_form("#devAddModal form");
-		alert(1);
+		//alert(1);
 		//s$("")[0].reset();
 		//发送ajax请求，查出部门信息，显示在下拉列表中
 		//getDepts("#devAddModal select");
@@ -366,6 +374,7 @@
 					//alert(result.msg);
 					//alert(result);
 					$("#devAddModal").modal('hide');
+					to_page(totalRecord);
 					//to_page(totalRecord);
 					/* if(result.code == 100){
 						//员工保存成功；
@@ -392,38 +401,11 @@
 			});
 		});
 	//返回查看人员
-	$("#psn_modal_btn").click(function(){
+/* 	$("#psn_modal_btn").click(function(){
 		window.location.href="/ssm/views/index.jsp";
-	});
-	$("#dev_del_modal_btn").click(function(){
-		var devChecks = "";
-		var del_idstr = "";
-		$.each($(".check_item:checked"),function(){
-			//this
-			devChecks += $(this).parents("tr").find("td:eq(2)").text()+",";
-			//组装员工id字符串
-			del_idstr += $(this).parents("tr").find("td:eq(1)").text()+"-";
-			//alert(devChecks);
-		});
-		//去除empNames多余的,
-	 	devChecks = devChecks.substring(0, devChecks.length-1);
-		//去除删除的id多余的-
-		del_idstr = del_idstr.substring(0, del_idstr.length-1);
-		alert(del_idstr);
-		if(confirm("确认删除【"+devChecks+"】吗？")){
-			//发送ajax请求删除
-			$.ajax({
-				url:"${APP_PATH}/delDev/"+296,
-				type:"DELETE",
-				success:function(result){
-					alert(result.msg);
-					//回到当前页面
-					to_page(currentPage);
-				}
-			});
-		} 
-	});
+	}); */
 	
+	//修改设备
 	$(document).on("click",".edit_btn",function(){
 		//alert($(this).attr("edit-id"));
 		getDev($(this).attr("edit-id"));
@@ -434,7 +416,7 @@
 		//getEmp($(this).attr("edit-id"));
 		
 		//3、把员工的id传递给模态框的更新按钮
- 		//$("#emp_update_btn").attr("edit-id",$(this).attr("edit-id"));
+ 		$("#dev_update_btn").attr("edit-id",$(this).attr("edit-id"));
 		$("#devUpdateModal").modal({
 			backdrop:"static"
 		}); 
@@ -448,6 +430,7 @@
 			success:function(result){
 				//console.log(result.extend.data);
 				//替换模块中的值
+				$("#devId_update_input").val(result.extend.data.devId);
 				$("#devSn_update_input").val(result.extend.data.devSn);
 				$("#devName_update_input").val(result.extend.data.devName);
 				$("#devAddr_update_input").val(result.extend.data.devAddr);
@@ -459,7 +442,33 @@
 	//保存修改的数据
 	//dev_update_btn
 	$("#dev_update_btn").click(function(){
-		alert("dev_update_btn");
+		//alert("dev_update_btn");
+		$.ajax({
+			url:"${APP_PATH}/updateDev/"+$(this).attr("edit-id"),
+			data:$("#devUpdateModal form").serialize(),
+			type:"PUT",
+			success:function(result){
+				//$("#devUpdateModal").hide();   错！！！！！！！！！
+				$("#devUpdateModal").modal('hide');
+				//alert(1);
+				to_page(currentPage);
+				//alert(2);
+			}
+		});
+	});
+	//批量删除设备
+	$("#dev_del_modal_btn").click(function(){
+		var ids, names;
+		var id = [];
+		$.each($(".check_item:checked"),function(){
+			
+		});
+		for(var i =0;i<$(".check_item:checked").length;i++){
+			id.push($(".check_item:checked"));
+			//arr.unshift(obj[i]);
+			}
+			//console.log(arr);
+		console.log(id);
 	});
 	</script>
 </html>

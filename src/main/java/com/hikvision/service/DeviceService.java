@@ -37,5 +37,17 @@ public class DeviceService {
 		return deviceMapper.selectByPrimaryKey(id);
 	}
 
+	//更新设备
+	public int updateDev(Device device) {
+		
+		
+		return deviceMapper.updateByPrimaryKeySelective(device);
+	}
+
+	public List<Device> searchDevEcharts() {
+		
+		return deviceMapper.searchDevEcharts();
+	}
+
 
 }

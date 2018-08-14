@@ -22,7 +22,7 @@ public interface PersonMapper {
     //code查询人员和多少台设备
     List<Person> selectNormal(PersonExample example);
     
-    List<Person> selectByExampleWithDevice(PersonExample example);
+    List<Person> selectCount();
     
     List<Person> selectByNamePsnDev(String name);
     
@@ -37,4 +37,8 @@ public interface PersonMapper {
     int updateByPrimaryKeySelective(Person record);
 
     int updateByPrimaryKey(Person record);
+
+	List<Person> searchCount(Person person);
+
+
 }

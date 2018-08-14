@@ -34,20 +34,16 @@ public class LoginController {
 			//model.addAttribute("person1",person.getName());
 			session.setAttribute("person", person);
 			//System.out.println(person.getName());
-			return "index";
+			return "tag";
 		}
-		return "fail";
+		return "login";
 	}
 	
-	@RequestMapping("/anotherpage")
-	public String hrefpage(){
-		
-		return "anotherpage";
-	}
-	
-	@RequestMapping("/noLogin")
-	public String noLogin(){
-		
+	//注销用户
+	@RequestMapping("/outLogin")
+	public String outLogin(HttpSession session){
+		//通过session.invalidata()方法来注销当前的session
+		session.invalidate();
 		return "login";
 	}
 }

@@ -2,7 +2,9 @@ package com.hikvision.controller;
 
 import java.util.List;
 
-import org.apache.ibatis.annotations.Delete;
+import javax.servlet.http.HttpServletRequest;
+
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -26,7 +28,7 @@ public class DeviceController {
 
 	@Autowired
 	DeviceService deviceService;
-	
+	//增加设备
 	@RequestMapping(value="/addDevice",method=RequestMethod.POST)
 	@ResponseBody
 	public Msg addDevice(Device device) {
@@ -37,9 +39,9 @@ public class DeviceController {
 	@GetMapping(value="/initDev")
 	@ResponseBody
 	public Msg initDev(@RequestParam(value = "pn", defaultValue = "1") Integer pn) {
-		PageHelper.startPage(pn, 5);
+		PageHelper.startPage(pn, 10);
 		List<Device> devices = deviceService.queryAll();
-		PageInfo page = new PageInfo(devices, 5);
+		PageInfo page = new PageInfo(devices, 10);
 		return Msg.success().add("pageInfo", page);
 	}
 	
@@ -60,11 +62,23 @@ public class DeviceController {
 	}
 	
 	//修改设备信息
-	@PostMapping("/updateDev")
+	@RequestMapping(value="/updateDev/{devId}",method=RequestMethod.PUT)
 	@ResponseBody
-	public Msg updateDev(@RequestParam(value = "id") Integer id) {
+	public Msg updateDev(Device device,HttpServletRequest request) {
 		//Device device1 = new Device();
-		
-		return Msg.success().add("data", null);
+		System.out.println("将要更新的员工数据："+device);
+		int up = 0;
+		up = deviceService.updateDev(device);
+		if(up==1) {
+			return Msg.success().add("data", null);
+		}
+		return Msg.fail().add("data", "修改设备信息失败");
+	}
+	//查看统计信息
+	@GetMapping("/searchDevEcharts")
+	@ResponseBody
+	public Msg searchDevEcharts(){
+		List<Device> list = deviceService.searchDevEcharts();
+		return Msg.success().add("data", list);
 	}
 }

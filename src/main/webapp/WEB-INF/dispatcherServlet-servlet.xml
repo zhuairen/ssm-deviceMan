@@ -20,13 +20,14 @@
 	</bean>
 	
 	<!-- 拦截器 -->
-  	<mvc:interceptors>
+<!--   	<mvc:interceptors>
 		<mvc:interceptor>
 		    <mvc:mapping path="/**" />
 		    <mvc:exclude-mapping path="/views/**" />
+		    <mvc:exclude-mapping path="/static/**" />
 		    <bean class="com.hikvision.Interceptor.LoginInterceptor" />
 	    </mvc:interceptor>
-	</mvc:interceptors>  
+	</mvc:interceptors>   -->
 	
 	<!--两个标准配置  -->
 	<!-- 将springmvc不能处理的请求交给tomcat -->
