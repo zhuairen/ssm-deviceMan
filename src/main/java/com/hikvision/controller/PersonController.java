@@ -1,13 +1,16 @@
 package com.hikvision.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -132,12 +135,14 @@ public class PersonController {
 	 * @author 模糊查询
 	 *
 	 */
-	@RequestMapping(value="/search",method=RequestMethod.POST)
+	@RequestMapping(value="/findPsnByName",method=RequestMethod.POST)
 	@ResponseBody
-	public Msg search(Person person) {
+	public Msg findPsnByName(Person person) {
 
-		List<Person> personList = personService.search(person);
-		return Msg.fail().add("data", personList);
+
+		List<Person> personList = personService.findPsnByName(person.getName());
+
+		return Msg.success().add("data", personList);
 	}
 	/**
 	 * @author 批量删除人员
@@ -145,9 +150,48 @@ public class PersonController {
 	 */
 	@RequestMapping(value="/delPerson/{ids}",method=RequestMethod.DELETE)
 	@ResponseBody
-	public Msg delPerson(Person person) {
+	public Msg delPerson(@PathVariable("ids")String ids) {
 
+		if(ids.contains("-")){
+			List<Integer> del_ids = new ArrayList<>();
+			String[] str_ids = ids.split("-");
+			//组装id的集合
+			for (String string : str_ids) {
+				del_ids.add(Integer.parseInt(string));
+			}
+			int more = 0;
+			more = personService.delPersonMore(del_ids);
+			if(more!=0) {
+				return Msg.success().add("data", "批量删除成功");
+			}else {
+			    return Msg.fail().add("data", "批量删除失败");
+			}
+			
+		}else{
+			Integer id = Integer.parseInt(ids);
+			int one = 0;
+			one = personService.delPerson(id);
+			if(one<0) {
+				return Msg.success().add("data", "删除单个成功");
+			}else {
+				return Msg.success().add("data", "删除单个失败");
+			}
+		}
 		
-		return Msg.fail().add("data", "");
+	}
+	/**
+	 * @author 新增人员
+	 *
+	 */
+	@RequestMapping(value="/addPsn",method=RequestMethod.POST)
+	@ResponseBody
+	public Msg addPsn(Person person) {
+		int i = 0;
+		i = personService.addPsn(person);
+		if(i<0) {
+			return Msg.success().add("data", "添加成功");
+		}else {
+			return Msg.fail().add("data", "添加失败");
+		}
 	}
 }

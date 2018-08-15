@@ -9,7 +9,6 @@
 <%
 	pageContext.setAttribute("APP_PATH", request.getContextPath());
 %>
-
 <script type="text/javascript"
 	src="${APP_PATH }/static/js/jquery-1.12.4.min.js"></script>
 <link
@@ -21,7 +20,7 @@
 <body>
 
 	<!-- 新增人员模态框 -->
-<div class="modal fade" id="devAddModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+<div class="modal fade" id="psnAddModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -29,18 +28,25 @@
         <h4 class="modal-title" id="myModalLabel">新增人员</h4>
       </div>
       <div class="modal-body">
-        <form class="form-horizontal" id="PsnUpdateModal">
-          <div class="form-group">
-		    <label class="col-sm-2 control-label" >Id</label>
-		    <div class="col-sm-5">
-		      <input type="number" name="id" class="form-control" id="id_add_input"  disabled="disabled">
-		      <span class="help-block"></span>
-		    </div>		    
-		  </div>
+        <form class="form-horizontal" id="psnAddModal">
 		  <div class="form-group">
 		    <label class="col-sm-2 control-label">姓名</label>
 		    <div class="col-sm-5">
-		      <input type="text" name="name" class="form-control" id="name_add_input" placeholder="姓名">
+		      <input type="text" name="name" class="form-control" id="name_add_input" placeholder="姓名"  required="true">
+		      <span class="help-block"></span>
+		    </div>
+		  </div>
+		  <div class="form-group">
+		    <label class="col-sm-2 control-label">密码</label>
+		    <div class="col-sm-5">
+		      <input type="password" name="password" class="form-control" id="pwd_add_input1" placeholder="密码"  required="true">
+		      <span class="help-block"></span>
+		    </div>
+		  </div>
+		  <div class="form-group">
+		    <label class="col-sm-2 control-label">确认密码</label>
+		    <div class="col-sm-5">
+		      <input type="password" name="password1" class="form-control" id="pwd_add_input2" placeholder="确认密码"  required="true">
 		      <span class="help-block"></span>
 		    </div>
 		  </div>
@@ -61,7 +67,7 @@
  		  <div class="form-group">
 		    <label class="col-sm-2 control-label">部门</label>
 		    <div class="col-sm-10">
-		      <input type="text" name="deptName" class="form-control" id="deptName_add_input" placeholder="部门">
+		      <input type="text" name="deptName" class="form-control" id="deptName_add_input" placeholder="部门"  required="true">
 		      <span class="help-block"></span>
 		    </div>		    
 		  </div>
@@ -110,14 +116,6 @@
 						</tr>
 					</thead>
 					<tbody>
- <!-- 							<td>#</td>
-							<td>ID</td>
-							<td>设备标识</td>
-							<td>设备名</td>
-							<td>所在地</td>
-							<td>设备价值</td>
-							<td>设备详情</td>
-							<td>操作</td -->
 					</tbody>
 				</table>
 			</div>
@@ -126,7 +124,7 @@
 	</div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+        <button type="button" class="btn btn-default" id="psndevClose">关闭</button>
       </div>
     </div>
   </div>
@@ -208,7 +206,7 @@
 		<div class="row">
 			<div class="col-md-4 col-md-offset-8">
 				<!-- <button class="btn btn-primary" id="dev_modal_btn">查看设备库</button> -->
-				<button class="btn btn-primary" id="psn_add_modal_btn">新增设备</button>
+				<button class="btn btn-primary" id="psn_add_modal_btn">新增人员</button>
 				<button class="btn btn-danger" id="psn_del_modal_btn">删除人员</button>
 			</div>
 		</div>
@@ -218,13 +216,6 @@
 				<table class="table table-hover" id="emps_table">
 					<thead>
 						<tr>
-<!-- 							<th>#</th>
-							<th>name</th>
-							<th>age</th>
-							<th>email</th>
-							<th>deptName</th>
-							<th>拥有设备数</th>
-							<th>操作</th> -->
 							<th>#</th>
 							<th>ID</th>
 							<th>姓名</th>
@@ -396,7 +387,7 @@
 		$(ele).find("*").removeClass("has-error has-success");
 		$(ele).find(".help-block").text("");
 	}
-	
+	//查看具体
 	$(document).on("click",".edit_btn",function(){
 		//alert("edit");
 		
@@ -443,81 +434,55 @@
 			}
 		});
 	});
-	//点击新增按钮弹出模态框。
+	//点击新增人员按钮弹出模态框。
 	$("#psn_add_modal_btn").click(function(){
 		//清除表单数据（表单完整重置（表单的数据，表单的样式））
-		reset_form("#empAddModal form");
+		reset_form("#psnAddModal form");
 		//alert(1);
 		//s$("")[0].reset();
 		//发送ajax请求，查出部门信息，显示在下拉列表中
 		//getDepts("#empAddModal select");
 		//弹出模态框
-		$("#empAddModal").modal({
+		$("#psnAddModal").modal({
 			backdrop:"static"
 		});
 	});
-	//保存
-	$("#dev_save_btn").click(function(){
-			//1、模态框中填写的表单数据提交给服务器进行保存
-			//1、先对要提交给服务器的数据进行校验
-/* 			if(!validate_add_form()){
-				return false;
-			}; */
-			//1、判断之前的ajax用户名校验是否成功。如果成功。
-/* 			if($(this).attr("ajax-va")=="error"){
-				return false;
-			} */
-			//alert($("#empAddModal form").serialize());
-			//2、发送ajax请求保存员工
-			$.ajax({
-				url:"${APP_PATH}/addDevice",
-				type:"POST",
-				data:$("#empAddModal form").serialize(),
-				success:function(result){
-					//alert(result.msg);
-					//alert(result);
-					$("#empAddModal").modal('hide');
-					//to_page(totalRecord);
-					/* if(result.code == 100){
-						//员工保存成功；
-						//1、关闭模态框
-						
-						alert(1);
-						//2、来到最后一页，显示刚才保存的数据
-						//发送ajax请求显示最后一页数据即可
-						
-					}else{
-						//显示失败信息
-						//console.log(result);
-						//有哪个字段的错误信息就显示哪个字段的；
-						/* if(undefined != result.extend.errorFields.email){
-							//显示邮箱错误信息
-							show_validate_msg("#email_add_input", "error", result.extend.errorFields.email);
-						}
-						if(undefined != result.extend.errorFields.empName){
-							//显示员工名字的错误信息
-							show_validate_msg("#empName_add_input", "error", result.extend.errorFields.empName); 
-						}*/
-					//} 
-				}
-			});
-		});
 	
-/* 	$("#dev_modal_btn").click(function(){
-		window.location.href="/ssm/views/device.jsp";
-	}); */
-
+	//保存
+	$("#psn_save_btn").click(function(){
+		if($("#pwd_add_input1").val()!="" && $("#pwd_add_input2").val()!="" && $("#pwd_add_input1").val()!=null &&$("#pwd_add_input2").val()!=null &&
+				$("#name_add_input").val()!="" && $("#name_add_input").val()!=null ){
+		    if($("#pwd_add_input1").val()==$("#pwd_add_input2").val()){
+		    	//alert($("#name").val());
+		    	//alert($("#psnAddModal form").serialize());
+		    	$.ajax({
+		    		url: "${APP_PATH}/addPsn",
+		    		data:$("#psnAddModal form").serialize(),
+		    		type:"POST",
+		    		success:function(result){
+		    			//console.log(result);
+		    			alert(result.extend.data);
+		    			$("#psnAddModal").modal('hide');
+						to_page(totalRecord);
+		    		}
+		    		
+		    	});
+		    }else{
+		    	alert("两次密码输入不同，请重试");
+		    }
+		}else{
+			alert("信息未填写完整，请完善后提交");
+		}
+	});
+	//查看拥有设备
 	$(document).on("click",".search_btn",function (){
 		//alert("edit");
-		
-		
-		//1、查出部门信息，并显示部门列表
-		//getDepts("#empUpdateModal select");
-		//2、查出员工信息，显示员工信息
+
+		//查出信息渲染
 		getPsnDev($(this).attr("sea-id"));
 		
-		//3、把员工的id传递给模态框的更新按钮
-		//$("#emp_update_btn").attr("edit-id",$(this).attr("edit-id"));
+		//传递值到按钮
+		$("#psn_del_modal_btn").attr("search-id",$(this).attr("sea-id"));
 		$("#psnDevModal").modal({
 			backdrop:"static"
 		});
@@ -583,14 +548,55 @@
 							alert(result.extend.data);
 							//刷新模态框
 							//document.getElementById(".search_btn").click();
+							getPsnDev($("#psn_del_modal_btn").attr("search-id"));
 
+							$("#psnDevModal").modal({
+								backdrop:"static"
+							});
 					}
 				});
 			}else{
 				return false;
 			}		
 	});
-	
+	$("#psndevClose").click(function(){
+		$('#psnDevModal').modal('hide');
+		to_page(currentPage);
+	});
+	//批量删除人员
+	$("#psn_del_modal_btn").click(function(){
+		/* alert($(".check_item:checked")); */
+		
+		//alert("1111");
+		var personNames="";
+		var del_psnid="";
+		var lens = 0;
+		$.each($(".check_item:checked"),function(){
+			++lens;
+			personNames += $(this).parents("tr").find("td:eq(2)").text()+",";
+			del_psnid += $(this).parents("tr").find("td:eq(1)").text()+"-";
+		});
+		if(lens==0){
+			alert("请选择要删除的对象");
+			return;
+		}
+		//去除empNames多余的,
+		personNames = personNames.substring(0, personNames.length-1);
+		//去除删除的id多余的-
+		del_psnid = del_psnid.substring(0, del_psnid.length-1);
+		if(confirm("请确认删除【"+personNames+"】吗？")){
+			//发送ajax请求删除
+			$.ajax({
+				url:"${APP_PATH}/delPerson/"+del_psnid,
+				type:"DELETE",
+				success:function(result){
+					alert(result.extend.data);
+					//回到当前页面
+					to_page(currentPage);
+				}
+			});
+		}
+	});
 	</script>
 </body>
 </html>

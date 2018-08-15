@@ -83,6 +83,9 @@
  			from device 
  		GROUP BY dev_name
   </select>
+  <select id="selectOtherDev" resultMap="BaseResultMap">
+  	select * from device where dev_id not in (select did from psn_dev)
+  </select>
   <select id="selectByExampleWithBLOBs" parameterType="com.hikvision.bean.DeviceExample" resultMap="ResultMapWithBLOBs">
     select
     <if test="distinct">

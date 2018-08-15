@@ -183,6 +183,14 @@
       </if>
 		ORDER BY p.id
   </select>
+  <select id="findPsnByName" parameterType="java.lang.String" resultMap="WithDeviceResultMap">
+  		select distinct
+				p.id, p.name, p.age, p.email, p.dept_name, (select COUNT(pd.did) from psn_dev pd where pd.person_id = p.id) as dev_count
+		from person p LEFT JOIN psn_dev pd
+		on p.id = pd.person_id
+        where p.name = #{name,jdbcType=VARCHAR}
+		ORDER BY p.id
+  </select>
   <select id="selectByExample" parameterType="com.hikvision.bean.PersonExample" resultMap="BaseResultMap">
     select
     <if test="distinct">
@@ -221,6 +229,13 @@
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
+  </delete>
+  <delete id="delPersonMore" parameterType="java.util.List">
+  	 delete from person where id in (
+        <foreach collection="list" item="id" separator=",">
+            #{id}
+        </foreach>
+        )
   </delete>
   <insert id="insert" parameterType="com.hikvision.bean.Person">
     insert into person (id, name, password, 

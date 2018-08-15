@@ -10,7 +10,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -20,15 +19,20 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.hikvision.bean.Device;
 import com.hikvision.bean.Msg;
-import com.hikvision.mapper.DeviceMapper;
 import com.hikvision.service.DeviceService;
 
+
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+
 @Controller
+/*@Api(value = "restful", description = "测试")*/
 public class DeviceController {
 
 	@Autowired
 	DeviceService deviceService;
 	//增加设备
+/*	@ApiOperation(value = "添加新的设备", notes = "新增设备", httpMethod = "POST", response = Device.class)*/
 	@RequestMapping(value="/addDevice",method=RequestMethod.POST)
 	@ResponseBody
 	public Msg addDevice(Device device) {
@@ -80,5 +84,15 @@ public class DeviceController {
 	public Msg searchDevEcharts(){
 		List<Device> list = deviceService.searchDevEcharts();
 		return Msg.success().add("data", list);
+	}
+	//查询设备库中未被绑定的设备
+	@GetMapping("/selectOtherDev")
+	@ResponseBody
+	public Msg selectOtherDev(@RequestParam(value = "pn", defaultValue = "1") Integer pn) {
+		
+		PageHelper.startPage(pn, 10);
+		List<Device> list = deviceService.selectOtherDev();
+		PageInfo page = new PageInfo(list);
+		return Msg.success().add("pageInfo", page);
 	}
 }

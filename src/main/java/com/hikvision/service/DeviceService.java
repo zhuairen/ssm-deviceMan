@@ -49,5 +49,10 @@ public class DeviceService {
 		return deviceMapper.searchDevEcharts();
 	}
 
+	public List<Device> selectOtherDev() {
+		// TODO Auto-generated method stub
+		return deviceMapper.selectOtherDev();
+	}
+
 
 }

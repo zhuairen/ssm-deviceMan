@@ -36,4 +36,6 @@ public interface DeviceMapper {
 
 	List<Device> searchDevEcharts();
 
+	List<Device> selectOtherDev();
+
 }

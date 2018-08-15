@@ -41,12 +41,24 @@ public class PersonService {
 		return personMapper.updateByPrimaryKeySelective(person);
 	}
 
-	public List<Person> search(Person person) {
-		
-		return personMapper.searchCount(person);
+
+
+	public int delPerson(Integer id) {
+		return personMapper.deleteByPrimaryKey(id);		
 	}
 
-	public int delPerson() {
-		return 0;		
+	public List<Person> findPsnByName(String name) {
+		// TODO Auto-generated method stub
+		return personMapper.findPsnByName(name);
+	}
+
+	public int addPsn(Person person) {
+		return personMapper.insertSelective(person);
+		
+	}
+
+	public int delPersonMore(List<Integer> del_ids) {
+		return personMapper.delPersonMore(del_ids);
+		
 	}
 }

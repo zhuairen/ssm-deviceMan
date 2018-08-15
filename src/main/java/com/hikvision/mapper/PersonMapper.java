@@ -38,7 +38,10 @@ public interface PersonMapper {
 
     int updateByPrimaryKey(Person record);
 
-	List<Person> searchCount(Person person);
+	List<Person> findPsnByName(String name);
+
+	int delPersonMore(List<Integer> del_ids);
+
 
 
 }
