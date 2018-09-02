@@ -14,8 +14,8 @@
 <script src="${APP_PATH}/static/js/echarts.min.js"></script>
 </head>
 <body>
-	<div id="secondPieChart" style="width:90%; height:400px; position:absolute;left:100px;top:50px" ></div>
-	<div id="map" style="width:90%; height:400px; position:absolute;left:100px;top:500px"></div>
+	<div id="secondPieChart" style="width:90%; height:600px; position:absolute;left:100px;top:50px" ></div>
+	<!-- <div id="map" style="width:90%; height:400px; position:absolute;left:100px;top:500px"></div> -->
 </body>
 <script type="text/javascript">
 function loadOneColumn() {

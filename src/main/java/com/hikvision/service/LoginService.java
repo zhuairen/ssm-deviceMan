@@ -11,7 +11,7 @@ public class LoginService {
 	@Autowired
 	PersonMapper personMapper;
 	
-	public Person loginCheck(String name,String password) {
+	public Person loginCheck(String name) {
 		Person person = personMapper.selectNamePwd(name);
 		return person;
 	}

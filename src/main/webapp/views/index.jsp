@@ -75,7 +75,7 @@
 		 <div class="form-group">
 		    <label class="col-sm-2 control-label">权限</label>
 		    <div class="col-sm-10">
-		      <input type="text" name="power" class="form-control" id="power_add_input" placeholder="权限">
+		      <input type="text" name="power" class="form-control" id="power_add_input" value="normal" placeholder="权限">
 		      <span class="help-block"></span>
 		    </div>		    
 		  </div>
@@ -438,11 +438,6 @@
 	$("#psn_add_modal_btn").click(function(){
 		//清除表单数据（表单完整重置（表单的数据，表单的样式））
 		reset_form("#psnAddModal form");
-		//alert(1);
-		//s$("")[0].reset();
-		//发送ajax请求，查出部门信息，显示在下拉列表中
-		//getDepts("#empAddModal select");
-		//弹出模态框
 		$("#psnAddModal").modal({
 			backdrop:"static"
 		});
@@ -451,10 +446,12 @@
 	//保存
 	$("#psn_save_btn").click(function(){
 		if($("#pwd_add_input1").val()!="" && $("#pwd_add_input2").val()!="" && $("#pwd_add_input1").val()!=null &&$("#pwd_add_input2").val()!=null &&
-				$("#name_add_input").val()!="" && $("#name_add_input").val()!=null ){
+				$("#name_add_input").val()!="" && $("#name_add_input").val()!=null && $("#power_add_input").val()!=null && $("#power_add_input").val()!=null){
+			if(!$("#power_add_input").val()=== "normal" || !$("#power_add_input").val()==="admin"){
+				alert("权限应该为normal或者admin");
+				return;
+			}
 		    if($("#pwd_add_input1").val()==$("#pwd_add_input2").val()){
-		    	//alert($("#name").val());
-		    	//alert($("#psnAddModal form").serialize());
 		    	$.ajax({
 		    		url: "${APP_PATH}/addPsn",
 		    		data:$("#psnAddModal form").serialize(),
@@ -471,7 +468,7 @@
 		    	alert("两次密码输入不同，请重试");
 		    }
 		}else{
-			alert("信息未填写完整，请完善后提交");
+			alert("信息未填写完整，请完善后提交，其中姓名、密码、权限为必填写");
 		}
 	});
 	//查看拥有设备
@@ -511,17 +508,11 @@
 					var devAddr = $("<td></td>").append(item.device.devAddr);
 					var devPrice = $("<td></td>").append(item.device.devPrice);
 					var devDetail = $("<td></td>").append(item.device.devDetail);
-					//var editBtn = $("<button></button>").addClass("btn btn-primary btn-sm edit_btn")
-									//.append($("<span></span>").addClass("glyphicon glyphicon-pencil")).append("编辑");
-					//为编辑按钮添加一个自定义的属性，来表示当前员工id
-					//editBtn.attr("edit-name",item.name);
 					var delPsnDevBtn =  $("<button></button>").addClass("btn btn-danger btn-sm delPsnDev_btn")
 									.append($("<span></span>").addClass("glyphicon glyphicon-trash")).append("移除");
-					//为删除按钮添加一个自定义的属性来表示当前删除的员工id
+
 					delPsnDevBtn.attr("delPsnDevId",item.device.devId);
-					//var btnTd = $("<td></td>").append(editBtn).append(" ").append(delBtn);
-					//var delBtn = 
-					//append方法执行完成以后还是返回原来的元素
+
 					$("<tr></tr>").append(checkBoxTd)
 						.append(id)
 						.append(devSn)
@@ -546,8 +537,6 @@
 					success: function(result){
 						//console.log(result);
 							alert(result.extend.data);
-							//刷新模态框
-							//document.getElementById(".search_btn").click();
 							getPsnDev($("#psn_del_modal_btn").attr("search-id"));
 
 							$("#psnDevModal").modal({

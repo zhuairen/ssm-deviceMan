@@ -5,7 +5,10 @@
 <configuration>
 	<settings>
 		<setting name="mapUnderscoreToCamelCase" value="true"/>
+		<setting name="logImpl" value="LOG4J"/>
 	</settings>
+	
+	
 	
 	<typeAliases>
 		<package name="com.hikvision.bean"/>

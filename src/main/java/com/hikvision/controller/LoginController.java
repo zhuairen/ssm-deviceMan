@@ -1,5 +1,8 @@
 package com.hikvision.controller;
 
+import java.io.UnsupportedEncodingException;
+import java.security.NoSuchAlgorithmException;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -12,6 +15,7 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 
 import com.hikvision.bean.Person;
 import com.hikvision.service.LoginService;
+import com.hikvision.utils.MD5utils;
 
 @Controller
 //@SessionAttributes("person")
@@ -26,17 +30,34 @@ public class LoginController {
 	}
 	
 	@RequestMapping("/checkLogin")
-	public String checkLogin(Model model,Person person,HttpServletRequest request) {
-		HttpSession session = request.getSession();
-		//System.out.println(person.getName());
-		person = loginService.loginCheck(person.getName(),person.getPassword());
-		if(person != null){
-			//model.addAttribute("person1",person.getName());
-			session.setAttribute("person", person);
-			//System.out.println(person.getName());
-			return "tag";
+	public String checkLogin(Model model,Person person,HttpServletRequest request) throws NoSuchAlgorithmException, UnsupportedEncodingException {
+		if(person.getName()==null) {
+			return "login";
 		}
-		return "login";
+		MD5utils md5utils = new MD5utils();
+		HttpSession session = request.getSession();
+		Person personCallBack = new Person();
+		String newPwd = md5utils.EncoderByMd5(person.getPassword());
+		personCallBack = loginService.loginCheck(person.getName());
+		
+		
+		if(personCallBack != null && personCallBack.getPassword().equals(newPwd)) {
+			
+				session.setAttribute("person", personCallBack);
+				session.setMaxInactiveInterval(30*60);
+				
+				if(personCallBack.getPower().equals("admin")) {
+					
+					return "tag";
+				}else if(personCallBack.getPower().equals("normal")){
+					
+					return "tagFrame";
+				}
+		}else {
+			return "login";
+		}
+		return "tag";
+
 	}
 	
 	//注销用户

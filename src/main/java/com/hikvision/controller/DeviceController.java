@@ -1,5 +1,6 @@
 package com.hikvision.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -9,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -94,5 +96,37 @@ public class DeviceController {
 		List<Device> list = deviceService.selectOtherDev();
 		PageInfo page = new PageInfo(list);
 		return Msg.success().add("pageInfo", page);
+	}
+	//批量删除设备
+	@RequestMapping(value="/delDevice/{ids}",method=RequestMethod.DELETE)
+	@ResponseBody
+	public Msg delPerson(@PathVariable("ids")String ids) {
+
+		if(ids.contains("-")){
+			List<Integer> del_ids = new ArrayList<>();
+			String[] str_ids = ids.split("-");
+			//组装id的集合
+			for (String string : str_ids) {
+				del_ids.add(Integer.parseInt(string));
+			}
+			int more = 0;
+			more = deviceService.delDevices(del_ids);
+			if(more!=0) {
+				return Msg.success().add("data", "批量删除成功");
+			}else {
+			    return Msg.fail().add("data", "批量删除失败");
+			}
+			
+		}else{
+			Integer id = Integer.parseInt(ids);
+			int one = 0;
+			one = deviceService.delDevice(id);
+			if(one<0) {
+				return Msg.success().add("data", "删除单个成功");
+			}else {
+				return Msg.success().add("data", "删除单个失败");
+			}
+		}
+		
 	}
 }

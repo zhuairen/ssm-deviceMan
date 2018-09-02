@@ -84,7 +84,7 @@
  		GROUP BY dev_name
   </select>
   <select id="selectOtherDev" resultMap="BaseResultMap">
-  	select * from device where dev_id not in (select did from psn_dev)
+  	select * from device where dev_id not in (select distinct did from psn_dev)
   </select>
   <select id="selectByExampleWithBLOBs" parameterType="com.hikvision.bean.DeviceExample" resultMap="ResultMapWithBLOBs">
     select
@@ -124,8 +124,15 @@
     from device
     where dev_id = #{devId,jdbcType=INTEGER}
   </select>
+  <delete id="delDevice" parameterType="java.util.List">
+    delete from device where dev_id in (
+        <foreach collection="list" item="id" separator=",">
+            #{id}
+        </foreach>
+        )
+  </delete>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
-    delete from device
+  	 delete from device
     where dev_id = #{devId,jdbcType=INTEGER}
   </delete>
   <delete id="deleteByExample" parameterType="com.hikvision.bean.DeviceExample">

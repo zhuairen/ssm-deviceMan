@@ -18,16 +18,25 @@
 		<property name="prefix" value="/views/"></property>
 		<property name="suffix" value=".jsp"></property>
 	</bean>
-	<bean class="springfox.documentation.swagger2.configuration.Swagger2DocumentationConfiguration" id="swagger2Config"/>
+	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">    
+	    <!-- 设置默认编码 -->  
+	    <property name="defaultEncoding" value="utf-8"></property>  
+	    <!-- 上传图片最大大小5M-->   
+	    <property name="maxUploadSize" value="51242440"></property>    
+</bean>  
+	
+<!-- 	<bean class="springfox.documentation.swagger2.configuration.Swagger2DocumentationConfiguration" id="swagger2Config"/> -->
 	<!-- 拦截器 -->
-<!--   	<mvc:interceptors>
+    <mvc:interceptors>
 		<mvc:interceptor>
 		    <mvc:mapping path="/**" />
 		    <mvc:exclude-mapping path="/views/**" />
 		    <mvc:exclude-mapping path="/static/**" />
+		    <mvc:exclude-mapping path="/login" />
+		     <mvc:exclude-mapping path="/checkLogin" />	     
 		    <bean class="com.hikvision.Interceptor.LoginInterceptor" />
 	    </mvc:interceptor>
-	</mvc:interceptors>   -->
+	</mvc:interceptors>    
 	
 	
 	<!--两个标准配置  -->

@@ -3,6 +3,8 @@ package com.hikvision.mapper;
 import com.hikvision.bean.psn_dev;
 import com.hikvision.bean.psn_devExample;
 import java.util.List;
+import java.util.Map;
+
 import org.apache.ibatis.annotations.Param;
 
 public interface psn_devMapper {
@@ -21,4 +23,7 @@ public interface psn_devMapper {
     int updateByExampleSelective(@Param("record") psn_dev record, @Param("example") psn_devExample example);
 
     int updateByExample(@Param("record") psn_dev record, @Param("example") psn_devExample example);
+
+	int linkDev(Map<String, Integer> map);
+
 }

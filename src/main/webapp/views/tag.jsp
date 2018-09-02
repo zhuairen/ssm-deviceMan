@@ -54,6 +54,9 @@
                         <a onclick="echarts()">设备地区分布</a>
                     </li>
                     <li>
+                        <a onclick="file()">多线程</a>
+                    </li>
+                    <li>
                         <a href="${APP_PATH }/outLogin ">注销账户</a>
                     </li>
                     <li>
@@ -94,6 +97,10 @@
 		function searchAndDev(){
 			//console.log($("#frame")["0"].src);
 			$("#frame")["0"].src=`<%=request.getContextPath()%>/views/search.jsp`;
+		}
+		function file(){
+			
+			$("#frame")["0"].src=`<%=request.getContextPath()%>/views/time.jsp`;
 		}
 	</script>
 </html>

@@ -1,30 +1,29 @@
 package com.hikvision.controller;
 
+import java.io.UnsupportedEncodingException;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.ibatis.annotations.Param;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.hikvision.bean.Device;
 import com.hikvision.bean.Msg;
 import com.hikvision.bean.Person;
-import com.hikvision.mapper.PersonMapper;
 import com.hikvision.service.PersonService;
+import com.hikvision.utils.MD5utils;
 
 
 
@@ -35,6 +34,8 @@ import com.hikvision.service.PersonService;
 @Controller
 public class PersonController {
 
+	private static final Logger logger = LoggerFactory.getLogger(PersonController.class);
+	
 	@Autowired
 	PersonService personService;
 	
@@ -43,14 +44,11 @@ public class PersonController {
 	public String getPerson(
 			@RequestParam(value = "pn", defaultValue = "1") Integer pn,
 			Model model) {
-		// 这不是一个分页查询；
-		// 引入PageHelper分页插件
-		// 在查询之前只需要调用，传入页码，以及每页的大小
+
 		PageHelper.startPage(pn, 5);
-		// startPage后面紧跟的这个查询就是一个分页查询
+
 		List<Person> persons = personService.getAll();
-		// 使用pageInfo包装查询后的结果，只需要将pageInfo交给页面就行了。
-		// 封装了详细的分页信息,包括有我们查询出来的数据，传入连续显示的页数
+
 		PageInfo page = new PageInfo(persons, 5);
 		model.addAttribute("pageInfo", page);
 
@@ -61,14 +59,11 @@ public class PersonController {
 	public String init(
 			@RequestParam(value = "pn", defaultValue = "1") Integer pn,
 			Model model) {
-		// 这不是一个分页查询；
-		// 引入PageHelper分页插件
-		// 在查询之前只需要调用，传入页码，以及每页的大小
+
 		PageHelper.startPage(pn, 5);
-		// startPage后面紧跟的这个查询就是一个分页查询
+
 		List<Person> persons = personService.getCount();
-		// 使用pageInfo包装查询后的结果，只需要将pageInfo交给页面就行了。
-		// 封装了详细的分页信息,包括有我们查询出来的数据，传入连续显示的页数
+
 		PageInfo page = new PageInfo(persons, 5);
 		model.addAttribute("pageInfo", page);
 
@@ -83,16 +78,16 @@ public class PersonController {
 	@ResponseBody
 	public Msg init(
 			@RequestParam(value = "pn", defaultValue = "1") Integer pn) {
-		// 这不是一个分页查询
-		// 引入PageHelper分页插件
-		// 在查询之前只需要调用，传入页码，以及每页的大小
+
 		PageHelper.startPage(pn, 10);
-		// startPage后面紧跟的这个查询就是一个分页查询
+
 		List<Person> persons = personService.getCount();
-		// 使用pageInfo包装查询后的结果，只需要将pageInfo交给页面就行了。
-		// 封装了详细的分页信息,包括有我们查询出来的数据，传入连续显示的页数
+
 		PageInfo page = new PageInfo(persons, 10);
+	
+		logger.info("成功执行");
 		return Msg.success().add("pageInfo", page);
+		
 	}
 	
 
@@ -132,7 +127,7 @@ public class PersonController {
 		return Msg.fail().add("data", "修改人员信息失败");
 	}
 	/**
-	 * @author 模糊查询
+	 * @author 查询
 	 *
 	 */
 	@RequestMapping(value="/findPsnByName",method=RequestMethod.POST)
@@ -181,11 +176,17 @@ public class PersonController {
 	}
 	/**
 	 * @author 新增人员
+	 * @throws UnsupportedEncodingException 
+	 * @throws NoSuchAlgorithmException 
 	 *
 	 */
 	@RequestMapping(value="/addPsn",method=RequestMethod.POST)
 	@ResponseBody
-	public Msg addPsn(Person person) {
+	public Msg addPsn(Person person) throws NoSuchAlgorithmException, UnsupportedEncodingException {
+		
+		MD5utils md5 = new MD5utils();
+		String newPwd = md5.EncoderByMd5(person.getPassword());
+		person.setPassword(newPwd);
 		int i = 0;
 		i = personService.addPsn(person);
 		if(i<0) {

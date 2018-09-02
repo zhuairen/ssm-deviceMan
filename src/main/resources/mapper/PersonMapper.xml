@@ -112,14 +112,7 @@
     id, name, password, age, email, dept_name, device_id, power, dev_id, dev_sn, dev_name, dev_addr, dev_price
   </sql>
 
-  <select id="searcha" parameterType="java.lang.String" resultMap="WithDeviceResultMap">
-  	select DISTINCT 
-		id, name, age, email, dept_name,dev_id, dev_sn, dev_name, dev_addr, dev_price, dev_detail
-	from person p LEFT JOIN psn_dev pd on p.id = pd.person_id LEFT JOIN device d
-	on pd.did = d.dev_id  and 
-		d.dev_sn like '%53%'
-	GROUP BY id
-  </select>
+
   <select id="selectNormal" parameterType="com.hikvision.bean.PersonExample" resultMap="NormalResultMap">
   	select
     <if test="distinct">
@@ -154,7 +147,7 @@
   </select>
   <select id="selectNamePwd" parameterType="java.lang.String" resultMap="BaseResultMap">
     select 
-    	name, password
+    	name, password, power
     from person
     where name = #{name,jdbcType=VARCHAR}
   </select>
@@ -183,12 +176,14 @@
       </if>
 		ORDER BY p.id
   </select>
-  <select id="findPsnByName" parameterType="java.lang.String" resultMap="WithDeviceResultMap">
+  <select id="findPsnByName" parameterType="com.hikvision.bean.Person" resultMap="WithDeviceResultMap">
   		select distinct
 				p.id, p.name, p.age, p.email, p.dept_name, (select COUNT(pd.did) from psn_dev pd where pd.person_id = p.id) as dev_count
 		from person p LEFT JOIN psn_dev pd
 		on p.id = pd.person_id
-        where p.name = #{name,jdbcType=VARCHAR}
+		<if test="_parameter != null">
+        	where p.name = #{_parameter} 
+        </if>
 		ORDER BY p.id
   </select>
   <select id="selectByExample" parameterType="com.hikvision.bean.PersonExample" resultMap="BaseResultMap">

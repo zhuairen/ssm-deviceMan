@@ -93,6 +93,13 @@
     insert into psn_dev (person_id, did)
     values (#{personId,jdbcType=INTEGER}, #{did,jdbcType=INTEGER})
   </insert>
+  
+  
+  <insert id="linkDev" parameterType="map">
+  	insert into psn_dev (person_id, did)
+    values (#{personId,jdbcType=INTEGER}, #{did,jdbcType=INTEGER})
+  </insert>
+   
   <insert id="insertSelective" parameterType="com.hikvision.bean.psn_dev">
     insert into psn_dev
     <trim prefix="(" suffix=")" suffixOverrides=",">

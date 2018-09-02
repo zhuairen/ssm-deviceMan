@@ -6,14 +6,18 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.hikvision.bean.Person;
+
 public class LoginInterceptor implements HandlerInterceptor{
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response,  
             Object handler) throws Exception {  
-        String personName= (String) request.getSession().getAttribute("person");
+        Person person1=  (Person) request.getSession().getAttribute("person");
+
         
-        if (personName != null) {
-                        
+        if (person1 != null) {
+        	 /*request.getRequestDispatcher("/tag.jsp").forward(request, response);*/
             return true;
+           
         }
         
         request.getRequestDispatcher("/login.jsp").forward(request, response);

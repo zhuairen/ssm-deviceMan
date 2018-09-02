@@ -50,9 +50,18 @@ public class DeviceService {
 	}
 
 	public List<Device> selectOtherDev() {
-		// TODO Auto-generated method stub
+		
 		return deviceMapper.selectOtherDev();
 	}
 
+	public int delDevice(Integer id) {
+		
+		return deviceMapper.deleteByPrimaryKey(id);
+	}
+
+	public int delDevices(List<Integer> del_ids) {
+		
+		return deviceMapper.delDevice(del_ids);
+	}
 
 }

@@ -1,4 +1,4 @@
-package sas;
+package com.hikvision.file;
 
 public class Department1 {
 

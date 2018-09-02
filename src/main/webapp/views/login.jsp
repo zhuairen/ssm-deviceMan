@@ -26,16 +26,13 @@
                 <div class="col-md-9">
                     <div class="form-group">
                         <i class="fa fa-user fa-lg"></i>
-                        <input class="form-control required" type="text" placeholder="Name" id="name" name="name" autofocus="autofocus" maxlength="20"/>
+                        <input class="form-control required" type="text" placeholder="Name" id="name" name="name" autofocus="autofocus" maxlength="20" required/>
                     </div>
                     <div class="form-group">
                             <i class="fa fa-lock fa-lg"></i>
-                            <input class="form-control required" type="password" placeholder="Password" id="password" name="password" maxlength="8"/>
+                            <input class="form-control required" type="password" placeholder="Password" id="password" name="password" maxlength="8" required/>
                     </div>
                     <div class="form-group">
-                        <label class="checkbox">
-                            <input type="checkbox" name="remember" value="1"/>记住用户名
-                        </label>
                     </div>
                     <div class="form-group col-md-offset-9">
                         <button type="submit" class="btn btn-success pull-right">登录</button>

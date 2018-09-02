@@ -17,6 +17,8 @@
 	rel="stylesheet">
 <script
 	src="${APP_PATH }/static/bootstrap-3.3.7-dist/js/bootstrap.min.js"></script>
+
+	
 </head>
 <body>
 </body>
@@ -25,14 +27,12 @@
 		<!-- 标题 -->
 		<div class="row">
 			<div class="col-md-12">
-				<%-- <h1>欢迎尊敬的    ${sessionScope.person.name}</h1> --%>
 				<h3>所有设备</h3>
 			</div>
 		</div>
 		<!-- 按钮 -->
 		<div class="row">
 			<div class="col-md-4 col-md-offset-8">
-				<!-- <button class="btn btn-primary" id="psn_modal_btn">查看人员</button> -->
 				<button class="btn btn-primary" id="dev_add_modal_btn">新增设备</button>
 				<button class="btn btn-danger" id="dev_del_modal_btn">删除</button>
 			</div>
@@ -43,13 +43,6 @@
 				<table class="table table-hover" id="emps_table">
 					<thead>
 						<tr>
-<!-- 							<th>#</th>
-							<th>devId</th>
-							<th>devSn</th>
-							<th>devName</th>
-							<th>devAddr</th>
-							<th>devPrice</th>
-							<th>devDetail</th> -->
 							<th>#</th>
 							<th>设备ID</th>
 							<th>设备标识</th>
@@ -88,7 +81,7 @@
         <h4 class="modal-title" id="myModalLabel">新增设备</h4>
       </div>
       <div class="modal-body">
-        <form class="form-horizontal">
+        <form class="form-horizontal" id="devAddForm">
 		  <div class="form-group">
 		    <label class="col-sm-2 control-label">devSn</label>
 		    <div class="col-sm-5">
@@ -200,6 +193,7 @@
 </div>
 	
 	<script type="text/javascript">
+		
 	var totalRecord,currentPage;
 	$(function(){
 		to_page(1);
@@ -225,9 +219,7 @@
 		//清空table表格
 		$("#emps_table tbody").empty();
 		var devices = result.extend.pageInfo.list;
-/*  		$.each(devices,function(index,item){
-			alert(item.devId);
-		});  */
+
 
 		$.each(devices,function(index,item){
 			var checkBoxTd = $("<td><input type='checkbox' class='check_item'/></td>");
@@ -240,15 +232,7 @@
 			var devDetail = $("<td></td>").append(item.devDetail);
 			var editBtn = $("<button></button>").addClass("btn btn-primary btn-sm edit_btn")
 							.append($("<span></span>").addClass("glyphicon glyphicon-pencil")).append("修改");
-			//为编辑按钮添加一个自定义的属性，来表示当前员工id
 			editBtn.attr("edit-id",item.devId);
-			//var delBtn =  $("<button></button>").addClass("btn btn-danger btn-sm delete_btn")
-							//.append($("<span></span>").addClass("glyphicon glyphicon-trash")).append("查看");
-			//为删除按钮添加一个自定义的属性来表示当前删除的员工id
-			//delBtn.attr("del-id",item.name);
-			//var btnTd = $("<td></td>").append(editBtn).append(" ").append(delBtn);
-			//var delBtn = 
-			//append方法执行完成以后还是返回原来的元素
 			$("<tr></tr>").append(checkBoxTd)
 				.append(devId)
 				.append(devSn)
@@ -333,14 +317,8 @@
 	
 	//点击新增按钮弹出模态框。
 	$("#dev_add_modal_btn").click(function(){
-		//alert(1);
-		//清除表单数据（表单完整重置（表单的数据，表单的样式））
+
 		reset_form("#devAddModal form");
-		//alert(1);
-		//s$("")[0].reset();
-		//发送ajax请求，查出部门信息，显示在下拉列表中
-		//getDepts("#devAddModal select");
-		//弹出模态框
 		$("#devAddModal").modal({
 			backdrop:"static"
 		});
@@ -355,17 +333,7 @@
 	
 	//保存
 	$("#dev_save_btn").click(function(){
-			//1、模态框中填写的表单数据提交给服务器进行保存
-			//1、先对要提交给服务器的数据进行校验
-/* 			if(!validate_add_form()){
-				return false;
-			}; */
-			//1、判断之前的ajax用户名校验是否成功。如果成功。
-/* 			if($(this).attr("ajax-va")=="error"){
-				return false;
-			} */
-			//alert($("#devAddModal form").serialize());
-			//2、发送ajax请求保存员工
+
 			$.ajax({
 				url:"${APP_PATH}/addDevice",
 				type:"POST",
@@ -375,47 +343,17 @@
 					//alert(result);
 					$("#devAddModal").modal('hide');
 					to_page(totalRecord);
-					//to_page(totalRecord);
-					/* if(result.code == 100){
-						//员工保存成功；
-						//1、关闭模态框
-						
-						alert(1);
-						//2、来到最后一页，显示刚才保存的数据
-						//发送ajax请求显示最后一页数据即可
-						
-					}else{
-						//显示失败信息
-						//console.log(result);
-						//有哪个字段的错误信息就显示哪个字段的；
-						/* if(undefined != result.extend.errorFields.email){
-							//显示邮箱错误信息
-							show_validate_msg("#email_add_input", "error", result.extend.errorFields.email);
-						}
-						if(undefined != result.extend.errorFields.empName){
-							//显示员工名字的错误信息
-							show_validate_msg("#empName_add_input", "error", result.extend.errorFields.empName); 
-						}*/
-					//} 
+
 				}
 			});
 		});
-	//返回查看人员
-/* 	$("#psn_modal_btn").click(function(){
-		window.location.href="/ssm/views/index.jsp";
-	}); */
+
 	
 	//修改设备
 	$(document).on("click",".edit_btn",function(){
 		//alert($(this).attr("edit-id"));
 		getDev($(this).attr("edit-id"));
-		
-		//1、查出部门信息，并显示部门列表
-		//getDepts("#empUpdateModal select");
-		//2、查出员工信息，显示员工信息
-		//getEmp($(this).attr("edit-id"));
-		
-		//3、把员工的id传递给模态框的更新按钮
+
  		$("#dev_update_btn").attr("edit-id",$(this).attr("edit-id"));
 		$("#devUpdateModal").modal({
 			backdrop:"static"
@@ -458,17 +396,34 @@
 	});
 	//批量删除设备
 	$("#dev_del_modal_btn").click(function(){
-		var ids, names;
-		var id = [];
+		var devNames="";
+		var del_devid="";
+		var lens = 0;
 		$.each($(".check_item:checked"),function(){
-			
+			++lens;
+			devNames += $(this).parents("tr").find("td:eq(2)").text()+",";
+			del_devid += $(this).parents("tr").find("td:eq(1)").text()+"-";
 		});
-		for(var i =0;i<$(".check_item:checked").length;i++){
-			id.push($(".check_item:checked"));
-			//arr.unshift(obj[i]);
-			}
-			//console.log(arr);
-		console.log(id);
+		if(lens==0){
+			alert("请选择要删除的对象");
+			return;
+		}
+		//去除多余的,
+		devNames = devNames.substring(0, devNames.length-1);
+		//去除删除的id多余的-
+		del_devid = del_devid.substring(0, del_devid.length-1);
+		if(confirm("请确认删除【"+devNames+"】吗？")){
+			//发送ajax请求删除
+			$.ajax({
+				url:"${APP_PATH}/delDevice/"+del_devid,
+				type:"DELETE",
+				success:function(result){
+					alert(result.extend.data);
+					//回到当前页面
+					to_page(currentPage);
+				}
+			});
+		}
 	});
 	</script>
 </html>

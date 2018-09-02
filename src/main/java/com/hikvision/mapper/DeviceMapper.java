@@ -38,4 +38,6 @@ public interface DeviceMapper {
 
 	List<Device> selectOtherDev();
 
+	int delDevice(List<Integer> del_ids);
+
 }
